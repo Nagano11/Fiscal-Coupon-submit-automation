@@ -1,12 +1,10 @@
 import pandas as pd
 import pyautogui as pg
-import time
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
+from selenium.common.exceptions import NoSuchElementException
 from tkinter.messagebox import showinfo
 import datetime
 
@@ -49,8 +47,7 @@ class CouponSubmitAutomation:
             return driver_browser
 
         else:
-            return("Navegador não identificado. Reinicie o programa.")
-            exit()
+            return "Navegador não identificado. Reinicie o programa."
 
     def automation_execution(self):
         site_fazenda = 'https://www.nfp.fazenda.sp.gov.br/EntidadesFilantropicas/ListagemNotaEntidade.aspx'
@@ -67,6 +64,7 @@ class CouponSubmitAutomation:
             else:
                 self.navigate_to_coupon_submit_page(selected_browser)
                 continue
+        self.conclusion_info()
 
     def perform_login(self, selected_browser):
         selected_browser.find_element(By.XPATH, '//*[@id="UserName"]').send_keys(self.cpf)
@@ -74,24 +72,30 @@ class CouponSubmitAutomation:
         selected_browser.find_element(By.XPATH, '// *[@id="Password"]').send_keys(self.password)
         WebDriverWait(selected_browser, 150).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="btnLogin"]')))
         selected_browser.find_element(By.XPATH, '//*[@id="btnLogin"]').click()
-        WebDriverWait(selected_browser, 90).until(EC.presence_of_element_located((By.XPATH, '//*[@id="menuSuperior"]/ul/li[5]/a')))
+        WebDriverWait(selected_browser, 90).\
+            until(EC.presence_of_element_located((By.XPATH,
+                                                  '//*[@id="menuSuperior"]/ul/li[5]/a')))
         WebDriverWait(selected_browser, 1)
 
     def navigate_to_coupon_submit_page(self, selected_browser):
         selected_browser.find_element(By.XPATH, '//*[@id="menuSuperior"]/ul/li[5]/a').click()
         selected_browser.find_element(By.XPATH, '//*[@id="menuSuperior:submenu:19"]/li[1]/a').click()
-        WebDriverWait(selected_browser, 90).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ctl00_ConteudoPagina_btnOk"]')))
+        WebDriverWait(selected_browser, 90).\
+            until(EC.presence_of_element_located((By.XPATH,
+                                                  '//*[@id="ctl00_ConteudoPagina_btnOk"]')))
         WebDriverWait(selected_browser, 2)
         selected_browser.find_element(By.XPATH, '//*[@id="ctl00_ConteudoPagina_btnOk"]').click()
         WebDriverWait(selected_browser, 2)
         WebDriverWait(selected_browser, 90).until(
-        EC.presence_of_element_located((By.XPATH, '//*[@id="ddlEntidadeFilantropica"]')))
+            EC.presence_of_element_located((By.XPATH, '//*[@id="ddlEntidadeFilantropica"]')))
         selected_browser.find_element(By.XPATH, '//*[@id="ddlEntidadeFilantropica"]').click()
         WebDriverWait(selected_browser, 1)
         pg.typewrite(self.entity)
         pg.press("enter")
         WebDriverWait(selected_browser, 1)
-        WebDriverWait(selected_browser, 150).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="ctl00_ConteudoPagina_btnNovaNota"]')))
+        WebDriverWait(selected_browser, 150).\
+            until(EC.element_to_be_clickable((By.XPATH,
+                                              '//*[@id="ctl00_ConteudoPagina_btnNovaNota"]')))
         selected_browser.find_element(By.XPATH, '//*[@id="ctl00_ConteudoPagina_btnNovaNota"]').click()
         WebDriverWait(selected_browser, 1)
         pg.press("esc")
@@ -121,7 +125,7 @@ class CouponSubmitAutomation:
 
     def submit_record(self, selected_browser):
         now = datetime.datetime.now()
-        with open('counting_cadastro_notas.txt', 'a') as counting:
+        with open('contagem_cadastro_notas.txt', 'a') as counting:
             if self.nota_err_msg_isDisplayed(selected_browser):
                 self.submit_count_ng += 1
                 counting.write(str(self.submit_count) + ', ' + now.strftime("%m/%d/%Y, %H:%M") + ", Erro")
@@ -132,7 +136,6 @@ class CouponSubmitAutomation:
                 counting.write('\n')
         counting.close()
 
-    def report_info(self):
-        return f'A lista possuia, {self.submit_count} cupons fiscais. n\ \
-                Foram cadastrados {self.submit_count_ok} cupons fiscais com sucesso. m\ \
-                E {self.submit_count_ng}, deram erro.'
+    def conclusion_info(self):
+        message = f'{self.submit_count_ok} de {self.submit_count} foram cadastrados com sucesso. Detalhes em contagem_cadastro_notas.txt na pasta do programa.'
+        showinfo(title='Lançamentos finalizado', message=message)
