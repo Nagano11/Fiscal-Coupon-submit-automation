@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import filedialog, ttk
-# from tkinter.messagebox import showinfo
+from tkinter.messagebox import showinfo
 from Automacao_lancamento_cupom_fiscal_GUI import CouponSubmitAutomation as Automation
 
 
@@ -23,10 +23,17 @@ class AutomationGui:
         self.root.mainloop()
 
     def gui_aesthetics(self):
-        self.root.geometry('650x300')
+        screen_width = self.root.winfo_width()
+        screen_height = self.root.winfo_height()
+        app_width = 650
+        app_height = 300
+        x = app_width - screen_width
+        y = app_height - screen_height
+        self.root.geometry(f'{app_width}x{app_height}+{x}+{y}')
         self.root.title('Automação de lançamento de cupom fiscal')
-        self.root.iconphoto(False, PhotoImage(file='automation_image.png'))
+        self.root.iconphoto(False, PhotoImage(file='humanoid_for_exe.png'))
         self.root.resizable(width=False, height=False)
+        self.root.call('tk', 'scaling', 1.3)
         self.root.config()
 
     def file_search_field(self):
@@ -107,17 +114,11 @@ class AutomationGui:
                wraplength=150).place(x=330, y=227)
 
     def initiate_automation_class(self):
-        try:
-            int(self.cpf_number.get())
-
-        except ValueError:
-            Label(self.root, text='Apenas números.')
-
         Automation(self.file_path.get(),
-                  self.cpf_number.get(),
-                  self.password.get(),
-                  self.entity.get(),
-                  self.browser_name.get())
+                   self.cpf_number.get(),
+                   self.password.get(),
+                   self.entity.get(),
+                   self.browser_name.get())
 
     def help_button(self):
         Button(self.root,
@@ -127,6 +128,9 @@ class AutomationGui:
                height=3).place(x=490, y=227)
 
     def readme_open(self):
-        pass
+        message = 'Para mais detalhes, acesse o arquivo "Leia-me.txt" salvo na pasta do programa.'
+        showinfo(title='Ajuda', message=message)
 
-start = AutomationGui()
+
+if __name__ == '__main__':
+    AutomationGui()
