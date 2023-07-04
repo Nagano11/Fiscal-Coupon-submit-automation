@@ -1,0 +1,3 @@
+# In order to create the .EXE file, I used PyInstaller lib. Using the CMD, below command was executed:
+
+python -m PyInstaller -F -w --onedir --icon=humanoid_for_exe.ico  robot_gui.py --hidden-import=pandas --hidden-import=pyautogui --hidden-import=time --hidden-import=SELENIUM --hidden-import=tkinter.messagebox --hidden-import=datetime --hidden-import=selenium.webdriver.common.keys --hidden-import=selenium.webdriver.common.by --hidden-import=selenium.webdriver.support --hidden-import=selenium.webdriver.support.wait --hidden-import=selenium.common.exceptions --hidden-import=Automacao_lancamento_cupom_fiscal_GUI  --hidden-import=webdriver_manager.chrome --hidden-import=webdriver_manager.firefox --hidden-import=webdriver_manager.microsoft
